@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+<!--Charles Towle  Homework Five  Incomeplete-->
+<!--I worked on the harder assignment and could not-->
+<!--get it working correctly                       -->
+<!--spent all my time tring to get it to work I did not-->
+<!-- have time to have a nice looking homeworking to turn in-->
+<!-- I believe my propblem are in my logic.  I have functions-->
+<!--that are calling each other creating a knott I can't seem to fix-->
+<!-- I have added comments as pseudocode-->
+
+<head>
+    <!--make the necessary clas for jquery and bootstra -->
+    <meta charset="UTF-8">
+    <title>TrviaGame</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js">
+    </script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+</head>
+
+<body>
+    <!--load the basic html -->
+    <!-- had hope to add styles to have a nice look program-->
+    <!-- basic html where I am injecting content into the DOM-->
+    <!-- is java script and query-->
+    <h1 id="bodyOne">Trivia Hawaii</h1>
+    <h3 id="intro">mouse click to start</h3>
+    <div id="frontPage">
+
+        <div id="question"></div>
+        <div id="answers"></div>
+        <div id="timer"></div>
+        <div id="scoreBoard"></div>
+    </div>
+
+    <script type="text/javascript"> 
+    //functions and variables
+    // i created an Object to hold queston data
+    // I had hope to have the objest have methods
+    // but the program logic  got confusing
+    // I tried to have my program work as if it was loading date from an 
+    // external source
+
+        $(document).ready(function () {
+    //question objects with question and answers
+            let questionOne = {
+                qust: "Hawaii is the __ state in the Union",
+                ansGroup: [{ ans: "49th", correct: false }, { ans: "50th", correct: true },
+                { ans: "51st", correct: false }, { ans: "52nd", correct: false }]
+            }
+            let questionTwo = {
+                qust: "The capital of Hawaii is?",
+                ansGroup: [{ ans: "Oahu", correct: false }, { ans: "Honolulu", correct: true },
+                { ans: "Maui", correct: false }, { ans: "Los Angeles", correct: false }]
+            }
+            let questionThree = {
+                qust: "Hawaii is located?",
+                ansGroup: [{ ans: "The Atlantic Ocean", correct: false }, { ans: "Pacific Ocean", correct: true },
+                { ans: "Indian Ocean", correct: false }, { ans: "The Dead Sea", correct: false }]
+            }
+            let questionFour = {
+                qust: "Hula is?",
+                ansGroup: [{ ans: "A traditional meal", correct: false }, { ans: "A traditional dance", correct: true },
+                { ans: "Foot wear", correct: false }, { ans: "The capital of Hawaii", correct: false }]
+            }
+            let questionFive = {
+                qust: "Hawaii state bird is?",
+                ansGroup: [{ ans: "Mina bird", correct: false }, { ans: "The Hawaiian Goose", correct: true },
+                { ans: "Gooney Bird", correct: false }, { ans: "The Maui Ducki", correct: false }]
+            }
+// global variables
+// creates an array of allQuestion from give quetions
+            let allQuestions = [questionOne, questionTwo, questionThree, questionFour, questionFive]
+            let hs = ""
+            let correctScore = 0
+            let wrongScore = 0
+            let unansweredScore = 0
+            let gameOver = false
+            let i = 0
+            let j = 0
+            let question
+            let numberOfQuestion = 4
+            let countDown
+            let correctDisplay = ""
+            let intervalId;
+            let intervalId2;
+// loads the first question and clears the introscreen
+            function resetgame() {
+                $("#intro").on("click", function () {
+                    $("#intro").html("<div>")
+                    nextQuestion()
+                })
+            } 
+// uses the .on(click) listeners for users input
+// this is where I am having my difficulty where my program are call each other 
+// I tried getting all these repeated if statements reduce into one statement using methods
+// in my question object but I ran into problems with that.
+            function startgame() {
+                $("#q0").on("click", function () {
+                    if (question.ansGroup[0].correct === true) {
+                        correctAnswer()
+                    }
+                    else {
+                        wrongAnswer()
+                    }
+                    if (i > allQuestions.length - 1) {
+                        endgame()
+                    }
+                })
+                $("#q1").on("click", function () {
+                    if (question.ansGroup[1].correct === true) {
+                        correctAnswer()
+                    }
+                    else {
+                        wrongAnswer()
+                    }
+                    if (i > allQuestions.length - 1) {
+                        endgame()
+                    }
+                })
+                $("#q2").on("click", function () {
+                    if (question.ansGroup[2].correct === true) {
+                        correctAnswer()
+                    }
+                    else {
+                        wrongAnswer()
+                    }
+                    if (i > allQuestions.length - 1) {
+                        endgame()
+                    }
+                })
+                $("#q3").on("click", function () {
+                    if (question.ansGroup[3].correct === true) {
+                        correctAnswer()
+                    }
+                    else {
+                        wrongScore++
+                    }
+                    if (i > allQuestions.length - 1) {
+                        endgame()
+                    }
+                })
+            }
+            // loads the next question and injects results into the DOM
+            // with a  countdown timer actively upadated
+            // the problem I am having is having my functions calling each other
+            function nextQuestion() {
+                $("#intro").on("click", resetgame)
+                question = allQuestions[i]
+
+                $("#question").html("<h2>" + question.qust + "</h2>")
+// nexted loops where the data is from matted
+                for (j = 0; j < 4; j++) {
+
+                    hS = '<button id=' + '"q' + j + '"' + ' type="button" class="btn btn-primary btn-lg btn-block">' +
+                        allQuestions[i].ansGroup[j].ans + "</button>"
+// check for right answer
+                    if (allQuestions[i].ansGroup[j].correct === true) {
+                        correctDisplay = allQuestions[i].ansGroup[j].ans
+                        console.log(hS)
+                    }
+                    $("#answers").append(hS)
+                }
+// the active scoreboard counting down
+                $("#scoreBoard").html("<h2>Wins:" + correctScore + " </h2>")
+                $("#scoreBoard").append("<h2>Losses:" + wrongScore + " </h2>")
+                $("#scoreBoard").append("<h2>Unanswered:" + unansweredScore + " </h2>")
+                startgame()
+                i++
+                countDown = 10
+                clearInterval(intervalId)
+                intervalId = setInterval(countDownFunction, 1000)
+            }
+// called when a correct answer is selected and upates counters
+            function correctAnswer() {
+                correctScore++
+                dispayWin()
+                console.log(correctScore)
+                waitTime()
+                clearInterval(intervalId)
+
+            }
+// caled when a wrong answer is selected and updates counters
+            function wrongAnswer() {
+                wrongScore++
+                displayLoss()
+                waitTime()
+                clearInterval(intervalId)
+            }
+//a support function that clears the timers
+            function waitTime() {
+                clearInterval(intervalId)
+                intervalId2 = setTimeout(fpReset, 3000)
+            }
+// inject winning content into the DOM and waits     
+            function dispayWin() {
+                $("#frontPage").html("<h2>Correct!</hw>")
+                waitTime()
+            }
+// inject lossing contect into the DOM and waits
+            function displayLoss() {
+                $("#frontPage").html("<h2>Wrong!</h2>")
+                $("#frontPage").append("<h2>The correct answer is: " + correctDisplay)
+                waitTime()
+            }
+// inject out of time into the DOM and waits         
+            function displayOutOfTime() {
+                $("#frontPage").html("<h2>Ran out of time!</h2>")
+                $("#frontPage").append("<h2>The correct answer is: " + correctDisplay)
+                waitTime()
+            }
+// helper function to display countdown inject into DOM
+            function displayCountDown() {
+                $("#timer").html("<h2>Time left:" + countDown)
+            }
+// setup invterval for countdown and check if out of time
+            function countDownFunction() {
+                countDown--
+                displayCountDown()
+                if (countDown < 0) {
+                    clearInterval(intervalId)
+                    unansweredScore++
+                    displayOutOfTime()
+                }
+            }
+// resets Dom for next queston. calls next question and checks if out of questions
+// incomplete code I kept getting unexpect results due to bad logic choise where
+// my function are calling each other
+            function fpReset() {
+                $("#frontPage").html("<div>")
+                $("#frontPage").html('<div id="question"></div>')
+                $("#frontPage").append('<div id="answers"></div>')
+                $("#frontPage").append('<div id="timer"></div>')
+                $("#frontPage").append('<div id="scoreBoard"></div>')
+                nextQuestion()
+                if (i > 4) { endgame() }
+            }   
+            resetgame()
+        })
+    </script>
+
+</body>
+
+</html>
